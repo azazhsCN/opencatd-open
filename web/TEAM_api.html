@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>API调用示例</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .result {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>API调用示例</h1>
+    
+    <label for="tokenInput">Token：</label>
+    <input type="text" id="tokenInput" name="tokenInput" placeholder="请输入Token">
+    <button onclick="setToken()">设置Token</button>
+    
+    <h2>初始化用户</h2>
+    <button onclick="initUser()">初始化用户</button>
+    
+    <h2>当前用户信息</h2>
+    <button onclick="getUserInfo()">获取当前用户信息</button>
+    
+    <h2>所有用户信息</h2>
+    <button onclick="getAllUsers()">获取所有用户信息</button>
+    
+    <h2>添加用户</h2>
+    <label for="userNameInput">用户名：</label>
+    <input type="text" id="userNameInput" name="userNameInput" placeholder="请输入用户名">
+    <button onclick="addUser()">添加用户</button>
+    
+    <h2>删除用户</h2>
+    <label for="userIdInput">用户ID：</label>
+    <input type="text" id="userIdInput" name="userIdInput" placeholder="请输入用户ID">
+    <button onclick="deleteUser()">删除用户</button>
+    
+    <h2>重置用户Token</h2>
+    <label for="resetUserIdInput">用户ID：</label>
+    <input type="text" id="resetUserIdInput" name="resetUserIdInput" placeholder="请输入用户ID">
+    <button onclick="resetToken()">重置用户Token</button>
+    
+    <h2>所有Key信息</h2>
+    <button onclick="getAllKeys()">获取所有Key</button>
+    
+    <h2>添加Key</h2>
+    <label for="keyNameInput">Key名称：</label>
+    <input type="text" id="keyNameInput" name="keyNameInput" placeholder="请输入Key名称">
+    <button onclick="addKey()">添加Key</button>
+    
+    <h2>删除Key</h2>
+    <label for="keyIdInput">Key ID：</label>
+    <input type="text" id="keyIdInput" name="keyIdInput" placeholder="请输入Key ID">
+    <button onclick="deleteKey()">删除Key</button>
+    
+    <h2>用量信息</h2>
+    <label for="fromInput">起始日期：</label>
+    <input type="text" id="fromInput" name="fromInput" placeholder="请输入起始日期">
+    <label for="toInput">结束日期：</label>
+    <input type="text" id="toInput" name="toInput" placeholder="请输入结束日期">
+    <button onclick="getUsages()">获取用量信息</button>
+    
+    <h2>返回结果：</h2>
+    <div id="responseContainer" class="result"></div>
+  </div>
+  
+  <script>
+    let token;
+    
+    const handleErrors = (response) => {
+      if (!response.ok) {
+        throw Error(`Status: ${response.status}`);
+      }
+      return response;
+    }
+    
+    function setToken() {
+      token = document.getElementById('tokenInput').value;
+      console.log('Token set to: ' + token);
+    }
+    
+    function displayResponse(response) {
+      const responseContainer = document.getElementById('responseContainer');
+      responseContainer.textContent = JSON.stringify(response, null, 2);
+    }
+    
+    function initUser() {
+      fetch('https://cat.hesheng.win/1/users/init', {
+        method: 'POST'
+      })
+        .then(handleErrors)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          displayResponse(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          displayResponse("Error: " + error);
+        });
+    }
+    
+    function getUserInfo() {
+      fetch(`https://cat.hesheng.win/1/me`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(handleErrors)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          displayResponse(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          displayResponse("Error: " + error);
+        });
+    }
+    
+    function getAllUsers() {
+      fetch('https://cat.hesheng.win/1/users', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(handleErrors)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          displayResponse(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          displayResponse("Error: " + error);
+        });
+    }
+    
+    function addUser() {
+      const userName = document.getElementById('userNameInput').value;
+      fetch('https://cat.hesheng.win/1/users', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: userName })
+      })
+        .then(handleErrors)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          displayResponse(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          displayResponse("Error: " + error);
+        });
+    }
+    
+    function deleteUser() {
+      const userId = document.getElementById('userIdInput').value;
+      fetch(`https://cat.hesheng.win/1/users/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(handleErrors)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          displayResponse(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          displayResponse("Error: " + error);
+        });
+    }
+    
+    function resetToken() {
+      const userId = document.getElementById('resetUserIdInput').value;
+      fetch(`https://cat.hesheng.win/1/users/${userId}/reset`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(handleErrors)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          displayResponse(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          displayResponse("Error: " + error);
+        });
+    }
+    
+    function getAllKeys() {
+      fetch(`https://cat.hesheng.win/1/keys`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(handleErrors)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          displayResponse(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          displayResponse("Error: " + error);
+        });
+    }
+    
+    function addKey() {
+      const keyName = document.getElementById('keyNameInput').value;
+      fetch('https://cat.hesheng.win/1/keys', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: keyName })
+      })
+        .then(handleErrors)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          displayResponse(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          displayResponse("Error: " + error);
+        });
+    }
+    
+    function deleteKey() {
+      const keyId = document.getElementById('keyIdInput').value;
+      fetch(`https://cat.hesheng.win/1/keys/${keyId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(handleErrors)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          displayResponse(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          displayResponse("Error: " + error);
+        });
+    }
+    
+    function getUsages() {
+      const from = document.getElementById('fromInput').value;
+      const to = document.getElementById('toInput').value;
+      fetch(`https://cat.hesheng.win/1/usages?from=${from}&to=${to}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(handleErrors)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          displayResponse(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          displayResponse("Error: " + error);
+        });
+    }
+  </script>
+</body>
+</html>
