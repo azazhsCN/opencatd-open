@@ -94,6 +94,8 @@
         <ul class="flex space-x-4">
           <li><a href="https://github.com/mirrors2/opencatd-open#qa" class="text-gray-700 hover:text-gray-900">FAQ</a>
           </li>
+          <li><a href="/TEAM_api.html" class="text-gray-700 hover:text-gray-900">API</a>
+          </li>
         </ul>
         <p class="text-gray-700">© {{ currentYear }} <a href="https://github/mirrors2/opencatd-open">Sakurasan</a>. All
           Rights
